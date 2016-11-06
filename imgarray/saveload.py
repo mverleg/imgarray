@@ -20,19 +20,13 @@ def save_array_img(mat, path):
 	sz = mat.dtype.itemsize
 	assert ((sz & (sz - 1)) == 0), 'only powers of two bytes per cell are supported'
 	width = mat.shape[0]
-	# print(mat.shape[1], mat.shape[1] * sz / 4.)
 	height = int(ceil(mat.shape[1] * sz / 4.))
-	# pad_len = mat.size - width * height
-	# print('&', height, mat.shape[1] * sz / 4., pad_len)
-	# pad_len = width * height - mat.size #(height - mat.shape[1] * sz / 4.) * mat.shape
 	pad_len = int(width * height * 4 / sz - mat.size)
 	print('>', mat.shape[0], mat.shape[1], width, height, pad_len)
-	# pad_len = 0
 	padding = b'\00' * pad_len
 	meta = PngImagePlugin.PngInfo()
 	meta.add_text('dtype', str(mat.dtype))
 	meta.add_text('padding', str(pad_len))
-	# print('*', len(mat.tobytes()), len(padding))
 	data = mat.tobytes() + padding
 	img = frombytes(mode='RGBA', size=(width, height), data=data)
 	img.save(path, format='png', pnginfo=meta)
@@ -55,13 +49,8 @@ def load_array_img(path, is_int=False):
 	pad_len = int(img.info.get('padding', 0))
 	sz = datatype.itemsize
 	width = img.size[0]
-	# height = int(img.size[1] * 4. / sz)
-	
 	height = int(img.size[1] * 4. / sz - float(pad_len) / img.size[0])
-	
 	print('<', img.size[0], img.size[1], width, height, pad_len)
-	# print(width*height, pad_len)
-	# print('*', len(img.tobytes()), pad_len, img.size[0]*img.size[1]-pad_len)
 	mat = frombuffer(img.tobytes(), dtype=datatype, count=4*img.size[0]*img.size[1]-pad_len)
 	print(mat.dtype, mat.shape, (width, height))
 	mat = mat.reshape((width, height))
