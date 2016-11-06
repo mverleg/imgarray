@@ -34,7 +34,7 @@ Notes
 
 * 1D arrays will be returned as 2D arrays with one unit dimension, because all data
 * It works with most numpy data types (specifically, the ones that use a number of bytes which is a power of 2)
-* If you remove metadata from the PNG, the file may not load (float64 will be assumed and it won't work if there was padding)
+* If you remove metadata from the PNG, the file only loads correctly if the data was float64, and you'll also get a warning.
 
 Usage & contributions
 ---------------------------------------

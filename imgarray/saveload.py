@@ -1,5 +1,6 @@
 
 from logging import warning
+from sys import stderr
 from PIL import PngImagePlugin
 from PIL.Image import frombytes, open
 from numpy import ndarray, frombuffer, dtype
@@ -23,11 +24,13 @@ def save_array_img(mat, path):
 	assert ((sz & (sz - 1)) == 0), 'only powers of two bytes per cell are supported'
 	img_width = mat.shape[0]
 	img_height = int(ceil(mat.shape[1] * sz / 4.))
-	pad_len = int(img_width * img_height * 4 - mat.size * sz)
-	padding = b'\00' * pad_len
 	meta = PngImagePlugin.PngInfo()
 	meta.add_text('dtype', str(mat.dtype))
-	meta.add_text('padding', str(pad_len))
+	padding = b''
+	if sz < 4:
+		pad_len = int(img_width * img_height * 4 - mat.size * sz)
+		padding = b'\00' * pad_len
+		meta.add_text('padding', str(pad_len))
 	data = mat.tobytes() + padding
 	img = frombytes(mode='RGBA', size=(img_width, img_height), data=data)
 	img.save(path, format='png', pnginfo=meta)
@@ -48,10 +51,10 @@ def load_array_img(path, is_int=False):
 	if 'dtype' not in img.info:
 		warning('png metadata missing or corrupted, cannot determine original data type, using float64')
 	datatype = dtype(img.info.get('dtype', 'float64'))
-	if 'padding' not in img.info:
-		warning('png metadata missing or corrupted, making assumptions about the shape of the data, this may lead to errors')
-	pad_len = int(img.info.get('padding', 0))
 	sz = datatype.itemsize
+	if 'padding' not in img.info and sz < 4:
+		raise IOError('png metadata missing or corrupted, making assumptions about the shape of the data, this may lead to errors')
+	pad_len = int(img.info.get('padding', 0))
 	mat_width = img.size[0]
 	mat_height = int((img.size[1] * 4 - pad_len / mat_width) / sz)
 	mat = frombuffer(img.tobytes(), dtype=datatype, count=mat_width * mat_height)
