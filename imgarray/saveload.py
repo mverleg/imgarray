@@ -16,6 +16,8 @@ def save_array_img(mat, path):
 	"""
 	assert isinstance(mat, ndarray)
 	assert mat.size > 0, 'cannot store arrays without elements as image'
+	if len(mat.shape) == 1:
+		mat = mat.reshape((mat.shape[0], 1))
 	assert len(mat.shape) == 2
 	sz = mat.dtype.itemsize
 	assert ((sz & (sz - 1)) == 0), 'only powers of two bytes per cell are supported'
@@ -39,12 +41,15 @@ def load_array_img(path, is_int=False):
 	:param is_int: Whether the data are integers (otherwise floats).
 	:return: The two-dimensional numpy array encoded by the image.
 	"""
+	#todo: can't his be done without padding being stored? are there multiple arrays that can lead to the same image? only for 1 or 2 bits I think
 	if not isfile(path):
 		raise IOError('image array file "{0:s}" not found'.format(path))
 	img = open(path)
 	if 'dtype' not in img.info:
-		warning('png metadata got corrupted, cannot determine original data type, using float64')
+		warning('png metadata missing or corrupted, cannot determine original data type, using float64')
 	datatype = dtype(img.info.get('dtype', 'float64'))
+	if 'padding' not in img.info:
+		warning('png metadata missing or corrupted, making assumptions about the shape of the data, this may lead to errors')
 	pad_len = int(img.info.get('padding', 0))
 	sz = datatype.itemsize
 	mat_width = img.size[0]
