@@ -36,7 +36,7 @@ Usage is very simple, there are only two functions:
 	save_array_img(data, path)
 	data2 = load_array_img(path)
 
-You can check out the tests for more (not a lot more to be fair).
+You can check out `demo.py` or the tests for more (not a lot more to be fair, it's a simple tool).
 
 Notes
 ---------------------------------------

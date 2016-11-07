@@ -19,12 +19,14 @@ def save_array_img(mat, path, img_format='png'):
 	:param path: The path to save the image at.
 	"""
 	assert isinstance(mat, ndarray)
-	assert mat.size > 0, 'cannot store arrays without elements as image'
+	if mat.size <= 0:
+		raise ValueError('Cannot store arrays without elements as image')
 	if len(mat.shape) == 1:
 		mat = mat.reshape((mat.shape[0], 1))
 	assert len(mat.shape) == 2
-	assert img_format in {'bmp', 'png', 'raw', 'tiff', 'gif',}, 'only lossless image formats that have metadata are supported, ' \
-		'otherwise data gets corrupted (in ways that do not approximate the original data)'
+	if img_format not in {'bmp', 'png', 'raw', 'tiff', 'gif',}:
+		raise TypeError('only lossless image formats that have metadata are supported, '
+			'otherwise data gets corrupted (in ways that do not approximate the original data)')
 	assert img_format == 'png', 'only png is implemented (metadata not yet implemented for others)'  # todo
 	sz = mat.dtype.itemsize
 	assert ((sz & (sz - 1)) == 0), 'only powers of two bytes per cell are supported'
