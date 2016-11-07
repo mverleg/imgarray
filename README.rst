@@ -15,12 +15,16 @@ Installation
 
 This package requires `numpy` and `pillow`. They will be installed automatically if you install using pip:
 
+.. code-block:: bash
+
 	pip install imgarray
 
 Usage
 ---------------------------------------
 
 Usage is very simple, there are only two functions:
+
+.. code-block:: python
 
 	from imgarray import save_array_img, load_array_img
 	data = randn((500, 500)).astype(int16)
