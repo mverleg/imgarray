@@ -41,8 +41,8 @@ You can check out the tests for more (not a lot more to be fair).
 Notes
 ---------------------------------------
 
-* 1D arrays will be returned as 2D arrays with one unit dimension, because all data
-* It works with most numpy data types (specifically, the ones that use a number of bytes which is a power of 2)
+* 1D arrays will be returned as 2D arrays with one unit dimension, because images are 2D.
+* It works with most numpy data types (specifically, the ones that use a number of bytes which is a power of 2).
 * If you remove metadata from the PNG, the file only loads correctly if the data was float64, and you'll also get a warning.
 * If the data has more or less than 4 bytes per value, the height of the image is scaled to match. So array shape and image shape are similar but not necessarily identical.
 
