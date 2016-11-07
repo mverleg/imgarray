@@ -1,6 +1,5 @@
 
 from logging import warning
-from sys import stderr
 from PIL import PngImagePlugin
 from PIL.Image import frombytes, open
 from numpy import ndarray, frombuffer, dtype
@@ -8,7 +7,7 @@ from os.path import isfile
 from math import ceil
 
 
-def save_array_img(mat, path):
+def save_array_img(mat, path, img_format='png'):
 	"""
 	Save numpy ndarray as an image.
 	
@@ -20,6 +19,8 @@ def save_array_img(mat, path):
 	if len(mat.shape) == 1:
 		mat = mat.reshape((mat.shape[0], 1))
 	assert len(mat.shape) == 2
+	assert img_format in {'bmp', 'png', 'raw', 'tiff', 'gif',}, 'only lossless image formats that have metadata are supported, ' \
+		'otherwise data gets corrupted (in ways that do not approximate the original data)'
 	sz = mat.dtype.itemsize
 	assert ((sz & (sz - 1)) == 0), 'only powers of two bytes per cell are supported'
 	img_width = mat.shape[0]
@@ -33,7 +34,7 @@ def save_array_img(mat, path):
 		meta.add_text('padding', str(pad_len))
 	data = mat.tobytes() + padding
 	img = frombytes(mode='RGBA', size=(img_width, img_height), data=data)
-	img.save(path, format='png', pnginfo=meta)
+	img.save(path, format=img_format, pnginfo=meta)
 
 
 def load_array_img(path, is_int=False):
@@ -44,7 +45,6 @@ def load_array_img(path, is_int=False):
 	:param is_int: Whether the data are integers (otherwise floats).
 	:return: The two-dimensional numpy array encoded by the image.
 	"""
-	#todo: can't his be done without padding being stored? are there multiple arrays that can lead to the same image? only for 1 or 2 bits I think
 	if not isfile(path):
 		raise IOError('image array file "{0:s}" not found'.format(path))
 	img = open(path)
