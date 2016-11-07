@@ -10,6 +10,11 @@ Q: Why would you ever want that?
 * Results look kind of funny, nothing too interesting though.
 * Because you can.
 
+Example
+---------------------------------------
+
+.. image:: https://raw.githubusercontent.com/mverleg/imgarray/master/demo.png
+
 Installation
 ---------------------------------------
 
