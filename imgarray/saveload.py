@@ -7,6 +7,10 @@ from os.path import isfile
 from math import ceil
 
 
+META_DESCRIPTION = 'This image encodes {0:s} {1:d}x{2:d} array data.'
+META_SOFTWARE = 'Saved/loadable with "imgarray" at "github.com/mverleg/imgarray".'
+
+
 def save_array_img(mat, path, img_format='png'):
 	"""
 	Save numpy ndarray as an image.
@@ -21,11 +25,14 @@ def save_array_img(mat, path, img_format='png'):
 	assert len(mat.shape) == 2
 	assert img_format in {'bmp', 'png', 'raw', 'tiff', 'gif',}, 'only lossless image formats that have metadata are supported, ' \
 		'otherwise data gets corrupted (in ways that do not approximate the original data)'
+	assert img_format == 'png', 'only png is implemented (metadata not yet implemented for others)'  # todo
 	sz = mat.dtype.itemsize
 	assert ((sz & (sz - 1)) == 0), 'only powers of two bytes per cell are supported'
 	img_width = mat.shape[0]
 	img_height = int(ceil(mat.shape[1] * sz / 4.))
 	meta = PngImagePlugin.PngInfo()
+	meta.add_text('Description', META_DESCRIPTION.format(str(mat.dtype), *mat.shape))
+	meta.add_text('Software', META_SOFTWARE)
 	meta.add_text('dtype', str(mat.dtype))
 	padding = b''
 	if sz < 4:
