@@ -1,2 +1,5 @@
 .cache/
-
+build/
+dist/
+imgarray.egg-info/
+*.egg-info
