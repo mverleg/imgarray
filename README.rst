@@ -1,7 +1,7 @@
 imgarray (Python)
 ---------------------------------------
 
-This saves 1D and 2D numpy arrays as png images.
+This stores 1D and 2D numpy arrays as png images. As a method of storage, not visualization (use pillow_ for that).
 
 Q: Why would you ever want that?
 
@@ -46,5 +46,8 @@ Usage & contributions
 Revised BSD License; at your own risk, you can mostly do whatever you want with this code, just don't use my name for promotion and do keep the license file.
 
 Pull requests are welcome, especially with unit tests. Due to the great importance of this library, maintenance is not going to be high-priority.
+
+
+.. _pillow: https://python-pillow.org/
 
 
