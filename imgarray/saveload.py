@@ -11,12 +11,12 @@ META_DESCRIPTION = 'This image encodes {0:s} {1:d}x{2:d} array data.'
 META_SOFTWARE = 'Saved/loadable with "imgarray" at "github.com/mverleg/imgarray".'
 
 
-def save_array_img(mat, path, img_format='png'):
+def save_array_img(mat, fp, img_format='png'):
 	"""
 	Save numpy ndarray as an image.
 	
 	:param mat: Two-dimensional ndarray to be saved.
-	:param path: The path to save the image at.
+	:param fp: The path to save the image at or a file object.
 	"""
 	assert isinstance(mat, ndarray)
 	if mat.size <= 0:
@@ -43,7 +43,7 @@ def save_array_img(mat, path, img_format='png'):
 		meta.add_text('padding', str(pad_len))
 	data = mat.tobytes() + padding
 	img = frombytes(mode='RGBA', size=(img_width, img_height), data=data)
-	img.save(path, format=img_format, pnginfo=meta)
+	img.save(fp, format=img_format, pnginfo=meta)
 
 
 def load_array_img(path, is_int=False):
